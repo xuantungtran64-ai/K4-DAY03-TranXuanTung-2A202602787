@@ -24,6 +24,7 @@ from prompts import (
     MAX_ITERATIONS
 )
 from providers import get_llm_provider
+from guardrails import check_input_guardrail
 
 load_dotenv()
 
@@ -68,6 +69,21 @@ def run_react_agent(user_query: str, provider, mcp_server: MCPAcademicServer) ->
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     
+    # 🛡️ KIỂM SOÁT ĐẦU VÀO (INPUT GUARDRAILS)
+    guard_result = check_input_guardrail(user_query)
+    if not guard_result["passed"]:
+        print(f"🛡️ [INPUT GUARDRAIL TRIGGERED]: {guard_result['reason']}")
+        print(f"🏁 [Final Answer]: {guard_result['response_message']}")
+        return [{
+            "step": 1,
+            "query": user_query,
+            "action_type": "INPUT_GUARDRAIL_BLOCKED",
+            "violation_type": guard_result["violation_type"],
+            "thought": f"Input Guardrail kích hoạt chặn truy vấn: {guard_result['reason']}",
+            "output": guard_result["response_message"],
+            "latency_ms": 1.0
+        }]
+
     step = 0
     trace_logs = []
     tools_list = mcp_server.list_tools()
@@ -119,21 +135,36 @@ def run_react_agent(user_query: str, provider, mcp_server: MCPAcademicServer) ->
                 
                 # Tổng hợp Final Answer từ kết quả Observation thực tế
                 if obs_data.get("status") == "SUCCESS":
-                    if "data" in obs_data:
-                        d = obs_data["data"]
+                    if "health_profile" in obs_data:
+                        hp = obs_data["health_profile"]
+                        cons = hp.get("today_consumption", {})
+                        allow = hp.get("safe_allowance", {})
+                        allergies_str = ", ".join(hp.get("allergies", [])) or "Không có dị ứng ghi nhận"
+                        med_str = hp.get("current_medication", "Không dùng thuốc")
                         final_answer = (
-                            f"Kết quả tra cứu cho sinh viên {obs_data.get('student_id', '')} ({d.get('full_name', '')}): "
-                            f"Lớp {d.get('class', '')}, GPA: {d.get('gpa', '')}, Email: {d.get('email', '')}, "
-                            f"Trạng thái: {d.get('status', '')}, Cố vấn: {d.get('advisor', '')}."
+                            f"📋 [Hồ sơ an toàn khách hàng {obs_data.get('user_id', '')} - {hp.get('full_name', '')}]:\n"
+                            f"  • Tiền sử dị ứng: {allergies_str}\n"
+                            f"  • Đơn thuốc hiện tại: {med_str}\n"
+                            f"  • Trạng thái di chuyển: {hp.get('driving_status', 'Không xác định')}\n"
+                            f"  • Lượng tiêu thụ hôm nay: Caffeine: {cons.get('caffeine_consumed_mg', 0)}/{cons.get('max_daily_caffeine_mg', 400)}mg | Cồn: {cons.get('alcohol_units_consumed', 0)}/{cons.get('max_daily_alcohol_units', 0)} units\n"
+                            f"  • Khuyến nghị pha chế an toàn: {allow.get('recommendation', '')}"
                         )
                     elif "message" in obs_data:
                         final_answer = obs_data["message"]
                     else:
                         final_answer = f"Đã hoàn tất xử lý qua MCP Server: {json.dumps(obs_data, ensure_ascii=False)}"
+                elif obs_data.get("status") in [
+                    "MEDICATION_CONTRAINDICATION", "DRIVING_RESTRICTION",
+                    "ALLERGY_SAFETY_ALERT", "ALCOHOL_LIMIT_EXCEEDED",
+                    "CAFFEINE_LIMIT_WARNING", "OUT_OF_STOCK"
+                ]:
+                    msg = obs_data.get("message", "")
+                    sug = obs_data.get("suggestion", "")
+                    final_answer = f"⚠️ {msg}\n💡 [Giải pháp thay thế an toàn từ AI Barista]: {sug}" if sug else msg
                 elif obs_data.get("status") == "NOT_FOUND":
-                    final_answer = obs_data.get("message", "Không tìm thấy thông tin sinh viên yêu cầu.")
+                    final_answer = obs_data.get("message", "Không tìm thấy dữ liệu yêu cầu.")
                 else:
-                    final_answer = f"Phản hồi từ công cụ: {json.dumps(obs_data, ensure_ascii=False)}"
+                    final_answer = obs_data.get("message") or f"Phản hồi từ công cụ: {json.dumps(obs_data, ensure_ascii=False)}"
             
             trace_logs.append({
                 "step": step,
@@ -164,7 +195,7 @@ def run_react_agent(user_query: str, provider, mcp_server: MCPAcademicServer) ->
 
 if __name__ == "__main__":
     print("==========================================================")
-    print("🏫 VINUNI AI COURSE - DAY 03 LAB: CHATBOT VS REACT AGENT")
+    print("🍸 VIN-SMART-BAR: AI SMART MIXOLOGIST & BARISTA AGENT")
     print("==========================================================")
     
     provider = get_llm_provider()
@@ -177,15 +208,16 @@ if __name__ == "__main__":
     print(f"✅ Đã tải thành công {len(tests)} Test Cases thử nghiệm.\n")
     
     if "--interactive" in sys.argv:
-        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với ReAct Agent:")
+        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với AI Smart Mixologist:")
         print("💡 Gợi ý câu hỏi thử nghiệm:")
-        print("   - Câu hỏi chung: 'Quy chế học vụ VinUni yêu cầu bao nhiêu tín chỉ?'")
-        print("   - Tra cứu học vụ: 'Hãy tra cứu thông tin học vụ của sinh viên SV2026001'")
-        print("   - Đặt lịch hẹn: 'Đặt lịch hẹn tư vấn cho SV2026001 vào 14:00 ngày 15/09/2026'")
+        print("   - Kiến thức chung: 'Uống kháng sinh có được uống rượu vang không?'")
+        print("   - Tra cứu y tế/hạn mức: 'Kiểm tra hồ sơ sức khỏe và hạn mức cồn của khách USR001'")
+        print("   - Thẩm định an toàn: 'Khách USR001 muốn gọi 1 ly Cocktail Gin Tonic'")
+        print("   - Gọi món an toàn: 'Pha cho khách USR001 một ly Trà hoa cúc mật ong ấm'")
         print("   - Gõ 'exit' hoặc 'quit' để kết thúc phiên trò chuyện.\n")
         while True:
             try:
-                user_input = input("👤 Sinh viên hỏi: ").strip()
+                user_input = input("👤 Khách hàng yêu cầu: ").strip()
                 if not user_input or user_input.lower() in ["exit", "quit"]:
                     print("👋 Tạm biệt! Kết thúc phiên trò chuyện.")
                     break
@@ -227,7 +259,7 @@ if __name__ == "__main__":
         print("  2. Chạy toàn bộ Test Cases:    python src/app.py --all\n")
         
         sample_query = tests[1]["question"]
-        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu học vụ) ---")
+        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu hồ sơ sức khỏe & quầy bar) ---")
         logs = run_react_agent(sample_query, provider, mcp_server)
         save_waterfall_trace(logs)
         print("\n💡 Hãy thử ngay lệnh: python src/app.py --interactive để chat trực tiếp!")

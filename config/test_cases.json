@@ -1,0 +1,38 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, uống rượu bia khi đang sử dụng thuốc kháng sinh Amoxicillin hoặc Paracetamol có nguy hiểm không?",
+    "expected_behavior": "Chatbot/Agent trả lời trực tiếp từ kiến thức y khoa an toàn, cảnh báo nguy cơ hoại tử gan cấp và ngộ độc, không cần gọi Tool.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy kiểm tra hồ sơ y tế, tiền sử dị ứng và lượng cồn/caffeine đã nạp hôm nay của khách hàng USR001.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu an toàn sinh trắc, tự động phát sinh Tool Call 'query_guest_health_and_bar_inventory' với mã 'USR001'.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "drink_dispensing",
+    "question": "Hãy pha cho khách hàng USR002 một ly Cocktail Gin Tonic nồng độ vừa phải, phục vụ đá với độ ngọt 30%.",
+    "expected_behavior": "Agent thẩm định an toàn (USR002 không lái xe, không dùng thuốc, còn hạn mức cồn) và phát sinh Tool Call 'dispense_smart_drink' thành công.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Khách hàng USR001 đang rất căng thẳng và muốn gọi một ly Cocktail Gin Tonic nồng độ mạnh để xả stress vào lúc 21:00.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct đa bước: Tra cứu hồ sơ USR001 -> Phát hiện đang uống kháng sinh và tự lái xe (CẤM CỒN) -> Tự động từ chối cồn và đề xuất pha Trà hoa cúc mật ong ấm thanh lọc an toàn.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy pha cho khách hàng USR001 một ly Cà phê Caramel Muối đá kết hợp sữa bò tươi.",
+    "expected_behavior": "Agent thẩm định an toàn phát hiện USR001 dị ứng sữa bò (dairy) và quầy bar hết Syrup Caramel -> Đưa ra cảnh báo an toàn sinh học và thiếu nguyên liệu, từ chối pha chế và gợi ý sữa yến mạch.",
+    "complexity": "Medium"
+  }
+]
+

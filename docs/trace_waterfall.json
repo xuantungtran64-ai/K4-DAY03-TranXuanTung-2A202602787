@@ -1,29 +1,513 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, uống rượu bia khi đang sử dụng thuốc kháng sinh Amoxicillin hoặc Paracetamol có nguy hiểm không?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn, việc uống rượu bia khi đang sử dụng thuốc kháng sinh Amoxicillin hoặc thuốc giảm đau Paracetamol tiềm ẩn nhiều nguy hiểm:\n\n1.  **Với Amoxicillin (kháng sinh):** Mặc dù Amoxicillin không có tương tác trực tiếp gây nguy hiểm cấp tính với cồn như một số loại kháng sinh khác, nhưng việc uống rượu bia có thể:\n    *   Làm suy yếu hệ miễn dịch, khiến cơ thể khó chống lại nhiễm trùng hơn.\n    *   Gây mất nước, làm giảm hiệu quả của thuốc và kéo dài thời gian hồi phục.\n    *   Gây thêm gánh nặng cho gan, cơ quan cũng phải xử lý cả thuốc và cồn.\n    *   Tăng tác dụng phụ như buồn nôn, chóng mặt.\n    **Tóm lại:** Tốt nhất là nên kiêng rượu bia hoàn toàn khi đang dùng kháng sinh để cơ thể tập trung hồi phục.\n\n2.  **Với Paracetamol (thuốc giảm đau, hạ sốt):** Đây là sự kết hợp **ĐẶC BIỆT NGUY HIỂM**, đặc biệt đối với gan. Cả Paracetamol và cồn đều được chuyển hóa tại gan. Khi sử dụng đồng thời, đặc biệt là với liều lượng cao hoặc thường xuyên, chúng có thể:\n    *   Làm tăng đáng kể nguy cơ tổn thương gan nghiêm trọng, thậm chí là suy gan cấp tính.\n    *   Tăng độc tính của Paracetamol lên gan, ngay cả ở liều lượng bình thường.\n    **Tóm lại:** TUYỆT ĐỐI KHÔNG NÊN uống rượu bia khi đang dùng Paracetamol để tránh nguy cơ ngộ độc gan cấp tính.\n\nVì sức khỏe của bạn, tôi khuyên bạn nên tránh xa rượu bia hoàn toàn khi đang trong quá trình điều trị bằng bất kỳ loại thuốc nào, đặc biệt là kháng sinh và Paracetamol.",
+    "latency_ms": 7640.75
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy kiểm tra hồ sơ y tế, tiền sử dị ứng và lượng cồn/caffeine đã nạp hôm nay của khách hàng USR001.",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "query_guest_health_and_bar_inventory",
     "arguments": {
-      "student_id": "SV2026001"
+      "user_id": "USR001"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "user_id": "USR001",
+      "health_profile": {
+        "full_name": "Trần Xuân Tùng",
+        "current_medication": "Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)",
+        "medical_contraindications": [
+          "STRICT_NO_ALCOHOL (Nguy cơ ngộ độc gan cấp và sốc phản vệ)",
+          "LIMIT_CAFFEINE (Tránh đau dạ dày)"
+        ],
+        "driving_status": "Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)",
+        "allergies": [
+          "dairy (dị ứng sữa bò/lactose)",
+          "peanut (dị ứng đậu phộng)"
+        ],
+        "today_consumption": {
+          "caffeine_consumed_mg": 280,
+          "max_daily_caffeine_mg": 300,
+          "last_caffeine_time": "14:30 (Đã nạp 2 shot Espresso chiều)",
+          "alcohol_units_consumed": 0.0,
+          "max_daily_alcohol_units": 0.0
+        },
+        "safe_allowance": {
+          "remaining_caffeine_mg": 20,
+          "remaining_alcohol_units": 0.0,
+          "recommendation": "Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối."
+        }
+      },
+      "target_mood": "Thư giãn & Trải nghiệm",
+      "inventory": {
+        "gin_bombay": {
+          "name": "Rượu Gin Bombay Sapphire",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "rum_bacardi": {
+          "name": "Rượu Rum Bacardi Superior",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "craft_beer_ipa": {
+          "name": "Bia Thủ công Heart of Darkness IPA",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.5,
+          "allergens": [
+            "gluten"
+          ]
+        },
+        "espresso_arabica": {
+          "name": "Hạt Cà phê Arabica Cầu Đất",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 120,
+          "allergens": []
+        },
+        "matcha_uji": {
+          "name": "Bột Trà xanh Uji Matcha Nhật Bản",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 35,
+          "allergens": []
+        },
+        "chamomile_tea": {
+          "name": "Trà hoa cúc hữu cơ Chamomile",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 0,
+          "allergens": []
+        },
+        "cow_dairy_milk": {
+          "name": "Sữa bò tươi nguyên kem Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "dairy"
+          ]
+        },
+        "oat_milk": {
+          "name": "Sữa yến mạch Oatside Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "lime_mint_syrup": {
+          "name": "Syrup Chanh Bạc Hà Tươi",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "raw_forest_honey": {
+          "name": "Mật ong rừng tự nhiên",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "tonic_water": {
+          "name": "Nước Tonic Schweppes",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "pineapple_juice": {
+          "name": "Nước ép dứa tươi nguyên chất",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "pineapple"
+          ]
+        },
+        "syrup_salted_caramel": {
+          "name": "Syrup Caramel muối biển",
+          "stock": "OUT_OF_STOCK (HẾT HÀNG)",
+          "allergens": []
+        }
+      }
+    },
+    "latency_ms": 3674.29
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy kiểm tra hồ sơ y tế, tiền sử dị ứng và lượng cồn/caffeine đã nạp hôm nay của khách hàng USR001.",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "📋 [Hồ sơ an toàn khách hàng USR001 - Trần Xuân Tùng]:\n  • Tiền sử dị ứng: dairy (dị ứng sữa bò/lactose), peanut (dị ứng đậu phộng)\n  • Đơn thuốc hiện tại: Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)\n  • Trạng thái di chuyển: Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)\n  • Lượng tiêu thụ hôm nay: Caffeine: 280/300mg | Cồn: 0.0/0.0 units\n  • Khuyến nghị pha chế an toàn: Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Hãy pha cho khách hàng USR002 một ly Cocktail Gin Tonic nồng độ vừa phải, phục vụ đá với độ ngọt 30%.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "query_guest_health_and_bar_inventory",
+    "arguments": {
+      "user_id": "USR002"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "user_id": "USR002",
+      "health_profile": {
+        "full_name": "Nguyễn Hoàng Nam",
+        "current_medication": "Không dùng thuốc",
+        "medical_contraindications": [],
+        "driving_status": "Đi Grab / Taxi (Không lái xe)",
+        "allergies": [],
+        "today_consumption": {
+          "caffeine_consumed_mg": 0,
+          "max_daily_caffeine_mg": 400,
+          "last_caffeine_time": "Chưa dùng",
+          "alcohol_units_consumed": 0.0,
+          "max_daily_alcohol_units": 2.5
+        },
+        "safe_allowance": {
+          "remaining_caffeine_mg": 400,
+          "remaining_alcohol_units": 2.5,
+          "recommendation": "Có thể thưởng thức Cocktail nồng độ vừa phải hoặc Cà phê đậm vị theo sở thích."
+        }
+      },
+      "target_mood": "Thư giãn & Trải nghiệm",
+      "inventory": {
+        "gin_bombay": {
+          "name": "Rượu Gin Bombay Sapphire",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "rum_bacardi": {
+          "name": "Rượu Rum Bacardi Superior",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "craft_beer_ipa": {
+          "name": "Bia Thủ công Heart of Darkness IPA",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.5,
+          "allergens": [
+            "gluten"
+          ]
+        },
+        "espresso_arabica": {
+          "name": "Hạt Cà phê Arabica Cầu Đất",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 120,
+          "allergens": []
+        },
+        "matcha_uji": {
+          "name": "Bột Trà xanh Uji Matcha Nhật Bản",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 35,
+          "allergens": []
+        },
+        "chamomile_tea": {
+          "name": "Trà hoa cúc hữu cơ Chamomile",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 0,
+          "allergens": []
+        },
+        "cow_dairy_milk": {
+          "name": "Sữa bò tươi nguyên kem Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "dairy"
+          ]
+        },
+        "oat_milk": {
+          "name": "Sữa yến mạch Oatside Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "lime_mint_syrup": {
+          "name": "Syrup Chanh Bạc Hà Tươi",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "raw_forest_honey": {
+          "name": "Mật ong rừng tự nhiên",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "tonic_water": {
+          "name": "Nước Tonic Schweppes",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "pineapple_juice": {
+          "name": "Nước ép dứa tươi nguyên chất",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "pineapple"
+          ]
+        },
+        "syrup_salted_caramel": {
+          "name": "Syrup Caramel muối biển",
+          "stock": "OUT_OF_STOCK (HẾT HÀNG)",
+          "allergens": []
+        }
+      }
+    },
+    "latency_ms": 3019.45
+  },
+  {
+    "step": 2,
+    "query": "Hãy pha cho khách hàng USR002 một ly Cocktail Gin Tonic nồng độ vừa phải, phục vụ đá với độ ngọt 30%.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "📋 [Hồ sơ an toàn khách hàng USR002 - Nguyễn Hoàng Nam]:\n  • Tiền sử dị ứng: Không có dị ứng ghi nhận\n  • Đơn thuốc hiện tại: Không dùng thuốc\n  • Trạng thái di chuyển: Đi Grab / Taxi (Không lái xe)\n  • Lượng tiêu thụ hôm nay: Caffeine: 0/400mg | Cồn: 0.0/2.5 units\n  • Khuyến nghị pha chế an toàn: Có thể thưởng thức Cocktail nồng độ vừa phải hoặc Cà phê đậm vị theo sở thích.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Khách hàng USR001 đang rất căng thẳng và muốn gọi một ly Cocktail Gin Tonic nồng độ mạnh để xả stress vào lúc 21:00.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "query_guest_health_and_bar_inventory",
+    "arguments": {
+      "target_mood": "thư giãn",
+      "user_id": "USR001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "user_id": "USR001",
+      "health_profile": {
+        "full_name": "Trần Xuân Tùng",
+        "current_medication": "Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)",
+        "medical_contraindications": [
+          "STRICT_NO_ALCOHOL (Nguy cơ ngộ độc gan cấp và sốc phản vệ)",
+          "LIMIT_CAFFEINE (Tránh đau dạ dày)"
+        ],
+        "driving_status": "Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)",
+        "allergies": [
+          "dairy (dị ứng sữa bò/lactose)",
+          "peanut (dị ứng đậu phộng)"
+        ],
+        "today_consumption": {
+          "caffeine_consumed_mg": 280,
+          "max_daily_caffeine_mg": 300,
+          "last_caffeine_time": "14:30 (Đã nạp 2 shot Espresso chiều)",
+          "alcohol_units_consumed": 0.0,
+          "max_daily_alcohol_units": 0.0
+        },
+        "safe_allowance": {
+          "remaining_caffeine_mg": 20,
+          "remaining_alcohol_units": 0.0,
+          "recommendation": "Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối."
+        }
+      },
+      "target_mood": "thư giãn",
+      "inventory": {
+        "gin_bombay": {
+          "name": "Rượu Gin Bombay Sapphire",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "rum_bacardi": {
+          "name": "Rượu Rum Bacardi Superior",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "craft_beer_ipa": {
+          "name": "Bia Thủ công Heart of Darkness IPA",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.5,
+          "allergens": [
+            "gluten"
+          ]
+        },
+        "espresso_arabica": {
+          "name": "Hạt Cà phê Arabica Cầu Đất",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 120,
+          "allergens": []
+        },
+        "matcha_uji": {
+          "name": "Bột Trà xanh Uji Matcha Nhật Bản",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 35,
+          "allergens": []
+        },
+        "chamomile_tea": {
+          "name": "Trà hoa cúc hữu cơ Chamomile",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 0,
+          "allergens": []
+        },
+        "cow_dairy_milk": {
+          "name": "Sữa bò tươi nguyên kem Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "dairy"
+          ]
+        },
+        "oat_milk": {
+          "name": "Sữa yến mạch Oatside Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "lime_mint_syrup": {
+          "name": "Syrup Chanh Bạc Hà Tươi",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "raw_forest_honey": {
+          "name": "Mật ong rừng tự nhiên",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "tonic_water": {
+          "name": "Nước Tonic Schweppes",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "pineapple_juice": {
+          "name": "Nước ép dứa tươi nguyên chất",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "pineapple"
+          ]
+        },
+        "syrup_salted_caramel": {
+          "name": "Syrup Caramel muối biển",
+          "stock": "OUT_OF_STOCK (HẾT HÀNG)",
+          "allergens": []
+        }
+      }
+    },
+    "latency_ms": 2766.06
+  },
+  {
+    "step": 2,
+    "query": "Khách hàng USR001 đang rất căng thẳng và muốn gọi một ly Cocktail Gin Tonic nồng độ mạnh để xả stress vào lúc 21:00.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "📋 [Hồ sơ an toàn khách hàng USR001 - Trần Xuân Tùng]:\n  • Tiền sử dị ứng: dairy (dị ứng sữa bò/lactose), peanut (dị ứng đậu phộng)\n  • Đơn thuốc hiện tại: Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)\n  • Trạng thái di chuyển: Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)\n  • Lượng tiêu thụ hôm nay: Caffeine: 280/300mg | Cồn: 0.0/0.0 units\n  • Khuyến nghị pha chế an toàn: Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Hãy pha cho khách hàng USR001 một ly Cà phê Caramel Muối đá kết hợp sữa bò tươi.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "query_guest_health_and_bar_inventory",
+    "arguments": {
+      "user_id": "USR001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "user_id": "USR001",
+      "health_profile": {
+        "full_name": "Trần Xuân Tùng",
+        "current_medication": "Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)",
+        "medical_contraindications": [
+          "STRICT_NO_ALCOHOL (Nguy cơ ngộ độc gan cấp và sốc phản vệ)",
+          "LIMIT_CAFFEINE (Tránh đau dạ dày)"
+        ],
+        "driving_status": "Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)",
+        "allergies": [
+          "dairy (dị ứng sữa bò/lactose)",
+          "peanut (dị ứng đậu phộng)"
+        ],
+        "today_consumption": {
+          "caffeine_consumed_mg": 280,
+          "max_daily_caffeine_mg": 300,
+          "last_caffeine_time": "14:30 (Đã nạp 2 shot Espresso chiều)",
+          "alcohol_units_consumed": 0.0,
+          "max_daily_alcohol_units": 0.0
+        },
+        "safe_allowance": {
+          "remaining_caffeine_mg": 20,
+          "remaining_alcohol_units": 0.0,
+          "recommendation": "Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối."
+        }
+      },
+      "target_mood": "Thư giãn & Trải nghiệm",
+      "inventory": {
+        "gin_bombay": {
+          "name": "Rượu Gin Bombay Sapphire",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "rum_bacardi": {
+          "name": "Rượu Rum Bacardi Superior",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.2,
+          "allergens": []
+        },
+        "craft_beer_ipa": {
+          "name": "Bia Thủ công Heart of Darkness IPA",
+          "stock": "SẴN SÀNG",
+          "alcohol_units": 1.5,
+          "allergens": [
+            "gluten"
+          ]
+        },
+        "espresso_arabica": {
+          "name": "Hạt Cà phê Arabica Cầu Đất",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 120,
+          "allergens": []
+        },
+        "matcha_uji": {
+          "name": "Bột Trà xanh Uji Matcha Nhật Bản",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 35,
+          "allergens": []
+        },
+        "chamomile_tea": {
+          "name": "Trà hoa cúc hữu cơ Chamomile",
+          "stock": "SẴN SÀNG",
+          "caffeine_mg": 0,
+          "allergens": []
+        },
+        "cow_dairy_milk": {
+          "name": "Sữa bò tươi nguyên kem Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "dairy"
+          ]
+        },
+        "oat_milk": {
+          "name": "Sữa yến mạch Oatside Barista",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "lime_mint_syrup": {
+          "name": "Syrup Chanh Bạc Hà Tươi",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "raw_forest_honey": {
+          "name": "Mật ong rừng tự nhiên",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "tonic_water": {
+          "name": "Nước Tonic Schweppes",
+          "stock": "SẴN SÀNG",
+          "allergens": []
+        },
+        "pineapple_juice": {
+          "name": "Nước ép dứa tươi nguyên chất",
+          "stock": "SẴN SÀNG",
+          "allergens": [
+            "pineapple"
+          ]
+        },
+        "syrup_salted_caramel": {
+          "name": "Syrup Caramel muối biển",
+          "stock": "OUT_OF_STOCK (HẾT HÀNG)",
+          "allergens": []
+        }
+      }
+    },
+    "latency_ms": 3289.85
+  },
+  {
+    "step": 2,
+    "query": "Hãy pha cho khách hàng USR001 một ly Cà phê Caramel Muối đá kết hợp sữa bò tươi.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "📋 [Hồ sơ an toàn khách hàng USR001 - Trần Xuân Tùng]:\n  • Tiền sử dị ứng: dairy (dị ứng sữa bò/lactose), peanut (dị ứng đậu phộng)\n  • Đơn thuốc hiện tại: Kháng sinh Amoxicillin & Paracetamol (Điều trị viêm họng)\n  • Trạng thái di chuyển: Đang tự lái xe ô tô (Yêu cầu BAC = 0.00% tuyệt đối)\n  • Lượng tiêu thụ hôm nay: Caffeine: 280/300mg | Cồn: 0.0/0.0 units\n  • Khuyến nghị pha chế an toàn: Chỉ được dùng đồ uống không cồn (Mocktail/Trà thảo mộc), không dùng sữa động vật (dairy), hạn chế tối đa caffeine vào buổi tối.",
     "latency_ms": 10.0
   }
 ]

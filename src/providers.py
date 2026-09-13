@@ -32,31 +32,83 @@ class MockOfflineProvider(BaseLLMProvider):
         self.model_name = "Offline-Mock-Model-2026"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        return f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. (Chế độ Chatbot không có Tool tra cứu dữ liệu thời gian thực)."
+        return (
+            f"[Mock Chatbot Response]: Xin chào! Tôi là Trợ lý pha chế ảo. "
+            f"Về câu hỏi '{prompt}', trong pha chế, việc kết hợp đồ uống cần chú ý đến sức khỏe và tương tác sinh học. "
+            f"Lưu ý tôi không có công cụ kết nối dữ liệu y tế cá nhân hay điều khiển máy pha tự động."
+        )
 
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Nhận diện intent gọi món cụ thể / lệnh pha chế
+        if "pha" in prompt_lower or "dispense" in prompt_lower or "order" in prompt_lower or "đặt" in prompt_lower:
+            if "caramel" in prompt_lower:
+                return {
+                    "type": "tool_call",
+                    "tool_name": "dispense_smart_drink",
+                    "arguments": {
+                        "user_id": "USR001",
+                        "drink_name": "Cà phê Caramel Muối Sữa Bò Tươi",
+                        "category": "COFFEE_CAFFEINE",
+                        "contains_alcohol": False,
+                        "contains_caffeine": True,
+                        "ingredients": ["espresso_arabica", "syrup_salted_caramel", "cow_dairy_milk"],
+                        "temperature": "ĐÁ",
+                        "sweetness_level": "50%"
+                    },
+                    "thought": "Khách hàng USR001 yêu cầu pha Cà phê Caramel Muối với sữa bò tươi. Tôi sẽ chuyển tiếp lệnh tới dispense_smart_drink để kiểm định dị ứng và tồn kho."
+                }
+            elif "gin" in prompt_lower or "cocktail" in prompt_lower or "rượu" in prompt_lower:
+                uid = "USR001" if "usr001" in prompt_lower else ("USR003" if "usr003" in prompt_lower else "USR002")
+                return {
+                    "type": "tool_call",
+                    "tool_name": "dispense_smart_drink",
+                    "arguments": {
+                        "user_id": uid,
+                        "drink_name": "Cocktail Gin Tonic",
+                        "category": "COCKTAIL_ALCOHOLIC",
+                        "contains_alcohol": True,
+                        "contains_caffeine": False,
+                        "ingredients": ["gin_bombay", "tonic_water"],
+                        "temperature": "ĐÁ",
+                        "sweetness_level": "30%"
+                    },
+                    "thought": f"Khách hàng {uid} yêu cầu Cocktail có cồn. Tôi sẽ gọi dispense_smart_drink để thẩm định an toàn y tế và nồng độ cồn."
+                }
+            else:
+                return {
+                    "type": "tool_call",
+                    "tool_name": "dispense_smart_drink",
+                    "arguments": {
+                        "user_id": "USR001",
+                        "drink_name": "Trà hoa cúc mật ong ấm",
+                        "category": "HERBAL_TEA",
+                        "contains_alcohol": False,
+                        "contains_caffeine": False,
+                        "ingredients": ["chamomile_tea", "raw_forest_honey"],
+                        "temperature": "NÓNG",
+                        "sweetness_level": "30%"
+                    },
+                    "thought": "Khách hàng cần đồ uống nhẹ nhàng, thư giãn. Tôi đề xuất và phát lệnh pha Trà hoa cúc mật ong ấm an toàn tuyệt đối."
+                }
+
+        # Nhận diện intent tra cứu hồ sơ sức khỏe & quầy bar
+        elif "tra cứu" in prompt_lower or "kiểm tra" in prompt_lower or "usr" in prompt_lower or "caffeine" in prompt_lower or "cồn" in prompt_lower:
+            uid = "USR001" if "usr001" in prompt_lower else ("USR003" if "usr003" in prompt_lower else "USR002")
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "query_guest_health_and_bar_inventory",
+                "arguments": {"user_id": uid, "target_mood": "Thư giãn sau giờ làm"},
+                "thought": f"Khách hàng yêu cầu kiểm tra dữ liệu y tế/hạn mức. Tôi sẽ gọi query_guest_health_and_bar_inventory cho mã '{uid}'."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
-            return {
-                "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
-            }
+
+        # Câu hỏi kiến thức chung
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": "[Mock Agent Response]: Theo khuyến cáo y khoa, tuyệt đối KHÔNG sử dụng đồ uống có cồn khi đang dùng kháng sinh (như Amoxicillin) hoặc thuốc hạ sốt (Paracetamol) vì sẽ gây độc gan cấp tính. Người tự lái xe cũng cần tuân thủ nồng độ cồn bằng 0.00%. Quầy bar thông minh luôn sẵn sàng các dòng Mocktail và Trà hoa cúc thanh lọc tốt cho sức khỏe!",
+                "thought": "Câu hỏi tư vấn kiến thức an toàn đồ uống và y tế, trả lời trực tiếp không cần gọi Tool."
             }
 
 
@@ -64,7 +116,7 @@ class GeminiProvider(BaseLLMProvider):
     """Google Gemini Provider (Native Tool Calling với Google GenAI SDK)"""
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
+        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.0-flash"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
